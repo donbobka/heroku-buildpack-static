@@ -160,7 +160,7 @@ RSpec.describe "Simple" do
       end
 
       it "should accept valid username and password" do
-        response = app.get("http://envuser:envpassword@/index.html")
+        response = app.get("http://envuser:envpassword@/index.html", true)
         expect(response.code).to eq("200")
       end
     end
@@ -174,12 +174,12 @@ RSpec.describe "Simple" do
       end
 
       it "should accept valid username and password from file" do
-        response = app.get("http://user:password@/foo.html")
+        response = app.get("http://user:password@/foo.html", true)
         expect(response.code).to eq("200")
       end
 
       it "should accept valid username and password from env" do
-        response = app.get("http://envuser:envpassword@/foo.html")
+        response = app.get("http://envuser:envpassword@/foo.html", true)
         expect(response.code).to eq("200")
       end
     end
