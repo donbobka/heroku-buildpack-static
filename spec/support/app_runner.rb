@@ -113,6 +113,7 @@ class AppRunner
         verify_mode: OpenSSL::SSL::VERIFY_NONE
       ) do |http|
         request = Net::HTTP::Get.new(uri.to_s)
+        request.basic_auth(uri.user, uri.password) unless uri.user.nil?
         http.request(request)
       end
     end

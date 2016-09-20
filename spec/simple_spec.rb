@@ -144,35 +144,43 @@ RSpec.describe "Simple" do
   end
 
   describe "basic_auth" do
+    let(:env) {
+      {
+        "BASIC_AUTH_USERNAME" => "envuser",
+        "BASIC_AUTH_PASSWORD" => "$apr1$vQPQyxL1$WYlXR3dAPlyaEvAcd/GII."
+      }
+    }
+
     context "static.json without basic_auth key" do
       let(:name) { "hello_world" }
-
-      let(:env) {
-        {
-          "BASIC_AUTH_USERNAME" => "test",
-          "BASIC_AUTH_PASSWORD" => "$apr1$Dnavu2z9$ZFxQn/mXVQoeYGD.tA2bW/"
-        }
-      }
 
       it "should require authentication" do
         response = app.get("/index.html")
         expect(response.code).to eq("401")
       end
+
+      it "should accept valid username and password" do
+        response = app.get("http://envuser:envpassword@/index.html")
+        expect(response.code).to eq("200")
+      end
     end
 
-    context "static.json with static.json" do
+    context "static.json with static.json and .htpasswd" do
       let(:name) { "basic_auth" }
-
-      let(:env) {
-        {
-          "BASIC_AUTH_USERNAME" => "test",
-          "BASIC_AUTH_PASSWORD" => "$apr1$/pb2/xQR$cn7UPcTOLymIH1ZMe.NfO."
-        }
-      }
 
       it "should require authentication" do
         response = app.get("/foo.html")
         expect(response.code).to eq("401")
+      end
+
+      it "should accept valid username and password from file" do
+        response = app.get("http://user:password@/foo.html")
+        expect(response.code).to eq("200")
+      end
+
+      it "should accept valid username and password from env" do
+        response = app.get("http://envuser:envpassword@/foo.html")
+        expect(response.code).to eq("200")
       end
     end
   end
